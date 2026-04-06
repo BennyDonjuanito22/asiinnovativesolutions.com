@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Get Started | ASI Innovative Solutions</title>
+  <meta name="description" content="ASI Innovative Solutions LLC is a technology holding company operating a network of AI-powered businesses across digital products, services, ecommerce, education, and media.">
+  <meta property="og:title" content="Get Started | ASI Innovative Solutions">
+  <meta property="og:description" content="ASI Innovative Solutions LLC is a technology holding company operating a network of AI-powered businesses across digital products, services, ecommerce, education, and media.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://asiinnovativesolutions.com/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Get Started | ASI Innovative Solutions">
+  <meta name="twitter:description" content="ASI Innovative Solutions LLC is a technology holding company operating a network of AI-powered businesses across digital products, services, ecommerce, education, and media.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-business-id="b0">
+  <header class="site-header">
+    <div class="container">
+      <a href="./index.html" class="logo"><span>A</span>SI Innovative Solutions</a>
+      <nav class="nav-links">
+    <a href="./index.html">Home</a>
+    <a href="./offer.html">Services</a>
+    <a href="./checkout.html" class="active">Get Started</a>
+      </nav>
+    </div>
+  </header>
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge">Secure Checkout</div>
+        <h1>Complete Your Purchase</h1>
+        <p>Select a plan below to proceed. All transactions are processed securely through Stripe.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Choose Your Plan</h2>
+      <div class="offers-grid" id="checkout-tiers">
+      </div>
+    </div>
+  </section>
+
+  <div id="checkout-status" style="display:none;" class="section">
+    <div class="container">
+      <p id="checkout-message" style="text-align:center;font-weight:600;">Processing...</p>
+    </div>
+  </div>
+
+  <section class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Purchase Information</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>Secure Payment</h3>
+          <p>All transactions processed through Stripe (PCI-DSS Level 1 compliant). Your card details never touch our servers.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Instant Access</h3>
+          <p>Digital products are delivered instantly after payment. Service engagements begin within 24 hours.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Satisfaction Guarantee</h3>
+          <p>14-day refund policy on digital products. Contact <a href="mailto:support@asiinnovativesolutions.com">support@asiinnovativesolutions.com</a> for support.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <p>&copy; 2026 ASI Innovative Solutions. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="mailto:support@asiinnovativesolutions.com">Contact</a>
+          <a href="./offer.html">Services</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+  (function(){
+    'use strict';
+    var API_BASE=window.ASI_API_BASE||'';
+    var BUSINESS_ID='b0';
+    var TIERS=[];
+    document.querySelectorAll('.buy-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var tier=parseInt(this.dataset.tier,10);
+        var info=TIERS[tier];
+        if(!info)return;
+        var statusEl=document.getElementById('checkout-status');
+        var msgEl=document.getElementById('checkout-message');
+        statusEl.style.display='block';
+        msgEl.textContent='Redirecting to secure checkout...';
+        if(!API_BASE){msgEl.textContent='Checkout is being configured. Please contact '+'support@asiinnovativesolutions.com'+' to complete your purchase.';return;}
+        fetch(API_BASE+'/stripe/create-checkout-session',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({business_id:BUSINESS_ID,tier:tier,product_name:info.name,amount:info.price_cents})
+        }).then(function(r){return r.json();}).then(function(d){
+          if(d.url)window.location.href=d.url;else msgEl.textContent=d.error||'Checkout unavailable. Contact support.';
+        }).catch(function(){msgEl.textContent='Checkout unavailable. Please contact support.';});
+      });
+    });
+  })();
+  </script>
+  <script>
+  (function(){
+    var bid='b0',page=location.pathname.split('/').pop()||'index.html';
+    var key='asi_pv_'+bid;
+    try{var d=JSON.parse(localStorage.getItem(key)||'{}');d[page]=(d[page]||0)+1;d._total=(d._total||0)+1;d._last=new Date().toISOString();d._ref=document.referrer||'direct';localStorage.setItem(key,JSON.stringify(d));}catch(e){}
+    if(window.ASI_ANALYTICS_URL){try{navigator.sendBeacon(window.ASI_ANALYTICS_URL,JSON.stringify({business_id:bid,page:page,referrer:document.referrer||'direct',timestamp:new Date().toISOString(),ua:navigator.userAgent}));}catch(e){}}
+  })();
+  </script>
+</body>
+</html>
